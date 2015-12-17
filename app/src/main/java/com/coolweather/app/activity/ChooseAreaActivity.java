@@ -66,7 +66,7 @@ public class ChooseAreaActivity extends Activity {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
                     queryCities();
-                } else if (currentLevel == LEVEL_COUNTY) {
+                } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 }
@@ -138,7 +138,7 @@ public class ChooseAreaActivity extends Activity {
             @Override
             public void onFinish(String response) {
                 boolean result = false;
-                if ("provicne".equals(type)) {
+                if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(coolWeatherDB, response);
                 } else if ("city".equals(type)) {
                     result = Utility.handleCityResponse(coolWeatherDB, response, selectedProvince.getId());
