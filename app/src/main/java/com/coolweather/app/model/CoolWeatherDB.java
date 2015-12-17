@@ -36,7 +36,7 @@ public class CoolWeatherDB {
         if (coolWeatherDB == null) {
             coolWeatherDB = new CoolWeatherDB(context);
         }
-        return coolWeatherDB
+        return coolWeatherDB;
     }
 
     /*将Province实例存储到数据库*/
