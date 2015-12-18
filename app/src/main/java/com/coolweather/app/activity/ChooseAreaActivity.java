@@ -53,13 +53,17 @@ public class ChooseAreaActivity extends Activity {
 
     private int currentLevel;
 
+    private boolean isFromWeatherActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*若是之前选择过具体的县的天气情况了，那么下次打开程序时不再展示省列表，而是直接展示具体县的天气*/
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+
+        /*若是之前选择过具体的县的天气情况了，并且不是从WeatherActivity来的，那么下次打开程序时不再展示省列表，而是直接展示具体县的天气*/
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("county_selected", false)) {
+        if (prefs.getBoolean("county_selected", false) && !isFromWeatherActivity) {
             Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -217,7 +221,11 @@ public class ChooseAreaActivity extends Activity {
             queryCities();
         } else if (currentLevel == LEVEL_CITY) {
             queryProvinces();
-        } else if (currentLevel == LEVEL_PROVINCE) {
+        } else {
+            if (isFromWeatherActivity) {
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }

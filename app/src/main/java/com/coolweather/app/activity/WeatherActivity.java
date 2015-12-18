@@ -1,12 +1,14 @@
 package com.coolweather.app.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,7 +24,7 @@ import java.util.Locale;
 /**
  * Created by Administrator on 2015/12/18.
  */
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements View.OnClickListener{
 
     private LinearLayout weatherInfoLayout;
 
@@ -38,6 +40,10 @@ public class WeatherActivity extends Activity {
 
     private TextView temp2Text;
 
+    private Button switchCity;
+
+    private Button refreshWeather;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +58,6 @@ public class WeatherActivity extends Activity {
         temp1Text = (TextView) findViewById(R.id.temp1);
         temp2Text = (TextView) findViewById(R.id.temp2);
 
-
         String countyCode = getIntent().getStringExtra("county_code");//是从主活动传过来的
 
         if (!TextUtils.isEmpty(countyCode)) {
@@ -64,7 +69,35 @@ public class WeatherActivity extends Activity {
 //            queryWeatherCode(countyCode);//中国天气网的
             queryWeatherInfoFromBaidu(countyCode);//从百度api
         } else {
-            showWeather();
+            showWeather();//显示本地已存到SharedPreferences上的数据
+        }
+
+        switchCity = (Button) findViewById(R.id.switch_city);
+        refreshWeather = (Button) findViewById(R.id.refresh_weather);
+        switchCity.setOnClickListener(this);
+        refreshWeather.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()) {
+            case R.id.switch_city:
+                Intent intent = new Intent(this, ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity", true);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.refresh_weather:
+                publishText.setText("同步中...");
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                String countyCode = prefs.getString("county_code","");
+                String countyCode1 = countyCode.substring(3);
+                if (!TextUtils.isEmpty(countyCode1)) {
+                    queryWeatherInfoFromBaidu(countyCode1);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -153,8 +186,8 @@ public class WeatherActivity extends Activity {
 //        currentDateText.setText("current_date", "");
         currentDateText.setText(sdf.format(new Date()));//这里再获取时间，再格式化时间才对吧。
         weatherDespText.setText(prefs.getString("weather_desp", ""));
-        temp1Text.setText(prefs.getString("temp1", ""));
-        temp2Text.setText(prefs.getString("temp2", ""));
+        temp1Text.setText(prefs.getString("temp1", "") + "°C");
+        temp2Text.setText(prefs.getString("temp2", "") + "°C");
 
         cityNameText.setVisibility(View.VISIBLE);
         weatherInfoLayout.setVisibility(View.VISIBLE);
