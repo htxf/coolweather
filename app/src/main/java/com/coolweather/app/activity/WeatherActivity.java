@@ -57,26 +57,28 @@ public class WeatherActivity extends Activity {
 
         if (!TextUtils.isEmpty(countyCode)) {
             //有县级代号，countyCode时，就去查天气，先查对应的天气码，再根据天气码查具体天气
+            //上一条注释是从中国天气网api查，但是不行。换一个api，直接用城市id就可查，即countyCode就可查天气信息。
             publishText.setText("同步中");
             cityNameText.setVisibility(View.INVISIBLE);
             weatherInfoLayout.setVisibility(View.INVISIBLE);
-            queryWeatherCode(countyCode);
+//            queryWeatherCode(countyCode);//中国天气网的
+            queryWeatherInfoFromBaidu(countyCode);//从百度api
         } else {
             showWeather();
         }
     }
 
-    /*查询县级代号所对应的天气代号*/
+    /*查询县级代号所对应的天气代号*//*
     private void queryWeatherCode(String countyCode) {
         String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
         queryFromServer(address, "countyCode");
     }
-    /*查询天气代号所对应的天气*/
+    *//*查询天气代号所对应的天气*//*
     private void queryWeatherInfo(String weatherCode) {
         String address = "http://www.weather.com.cn/data/cityinfo" + weatherCode + ".html";
         queryFromServer(address, "weatherCode");
     }
-    /*根据传入的地址和类型去服务器查询天气代号或天气信息*/
+    *//*根据传入的地址和类型去服务器查询天气代号或天气信息*//*
     private void queryFromServer(final String address, final String type) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
@@ -98,6 +100,34 @@ public class WeatherActivity extends Activity {
                         }
                     });
                 }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        publishText.setText("同步失败");
+                    }
+                });
+            }
+        });
+    }*/
+
+    private void queryWeatherInfoFromBaidu(String countyCode){
+        String httpUrl = "http://apis.baidu.com/apistore/weatherservice/cityid";
+        String httpArg = "cityid=101" + countyCode;
+        String address = httpUrl + "?" + httpArg;
+        HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Utility.handleWeatherResponse(WeatherActivity.this, response);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showWeather();
+                    }
+                });
             }
 
             @Override

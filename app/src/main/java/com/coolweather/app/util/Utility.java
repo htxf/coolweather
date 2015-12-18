@@ -12,10 +12,6 @@ import com.coolweather.app.model.Province;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * Created by Administrator on 2015/12/17.
  */
@@ -79,14 +75,15 @@ public class Utility {
     /*解析服务器返回的具体城市天气信息的JSON数据，并存储到本地*/
     public static void handleWeatherResponse(Context context, String response) {
         try {
+            /*改成了从百度api里获取，所以一些字符串（键）不一样*/
             JSONObject jsonObject = new JSONObject(response);
-            JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
+            JSONObject weatherInfo = jsonObject.getJSONObject("retData");//这个api返回的pinyin键对应的是县所在的市
             String cityName = weatherInfo.getString("city");
-            String weatherCode = weatherInfo.getString("cityid");//有问题，“cityid”对应的应该是countiCode，而且没啥用
-            String temp1 = weatherInfo.getString("temp1");
-            String temp2 = weatherInfo.getString("temp2");
+            String weatherCode = weatherInfo.getString("citycode");//有问题，“cityid”对应的应该是countiCode，而且没啥用
+            String temp1 = weatherInfo.getString("l_tmp");
+            String temp2 = weatherInfo.getString("h_tmp");
             String weatherDesp= weatherInfo.getString("weather");
-            String publishTime = weatherInfo.getString("ptime");
+            String publishTime = weatherInfo.getString("time");
             saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime);
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +93,7 @@ public class Utility {
     public static void saveWeatherInfo(Context context, String cityName, String weatherCode,
                                        String temp1, String temp2, String weatherDesp,
                                        String publishTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("county_selected", true);
         editor.putString("city_name", cityName);
@@ -105,7 +102,7 @@ public class Utility {
         editor.putString("temp2", temp2);
         editor.putString("weather_desp", weatherDesp);
         editor.putString("publish_time", publishTime);
-        editor.putString("current_date", sdf.format(new Date()));
+//        editor.putString("current_date", sdf.format(new Date()));
         editor.commit();
     }
 }
