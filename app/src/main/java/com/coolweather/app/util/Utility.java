@@ -74,8 +74,9 @@ public class Utility {
 
     /*解析服务器返回的具体城市天气信息的JSON数据，并存储到本地*/
     public static void handleWeatherResponse(Context context, String response) {
-        try {
-            /*改成了从百度api里获取，所以一些字符串（键）不一样*/
+       /*百度api*/
+       /* try {
+            *//*改成了从百度api里获取，所以一些字符串（键）不一样*//*
             JSONObject jsonObject = new JSONObject(response);
             JSONObject weatherInfo = jsonObject.getJSONObject("retData");//这个api返回的pinyin键对应的是县所在的市
             String cityName = weatherInfo.getString("city");
@@ -84,6 +85,21 @@ public class Utility {
             String temp2 = weatherInfo.getString("h_tmp");
             String weatherDesp= weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("time");
+            saveWeatherInfo(context, cityName, countyCode, temp1, temp2, weatherDesp, publishTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+        /*中国天气网api*/
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
+            String cityName = weatherInfo.getString("city");
+            String countyCode = weatherInfo.getString("cityid");//有问题，“cityid”对应的应该是countiCode，而且没啥用
+            String temp1 = weatherInfo.getString("temp2");
+            String temp2 = weatherInfo.getString("temp1");
+            String weatherDesp= weatherInfo.getString("weather");
+            String publishTime = weatherInfo.getString("ptime");
             saveWeatherInfo(context, cityName, countyCode, temp1, temp2, weatherDesp, publishTime);
         } catch (Exception e) {
             e.printStackTrace();

@@ -66,8 +66,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
             publishText.setText("同步中");
             cityNameText.setVisibility(View.INVISIBLE);
             weatherInfoLayout.setVisibility(View.INVISIBLE);
-//            queryWeatherCode(countyCode);//中国天气网的
-            queryWeatherInfoFromBaidu(countyCode);//从百度api
+            queryWeatherCode(countyCode);//中国天气网的
+//            queryWeatherInfoFromBaidu(countyCode);//从百度api
         } else {
             showWeather();//显示本地已存到SharedPreferences上的数据
         }
@@ -93,7 +93,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 String countyCode = prefs.getString("county_code","");
                 String countyCode1 = countyCode.substring(3);
                 if (!TextUtils.isEmpty(countyCode1)) {
-                    queryWeatherInfoFromBaidu(countyCode1);
+//                    queryWeatherInfoFromBaidu(countyCode1);//从百度api查
+                    queryWeatherCode(countyCode);//中国天气网的
+
                 }
                 break;
             default:
@@ -101,17 +103,17 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    /*查询县级代号所对应的天气代号*//*
+    /*查询县级代号所对应的天气代号*/
     private void queryWeatherCode(String countyCode) {
         String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
         queryFromServer(address, "countyCode");
     }
-    *//*查询天气代号所对应的天气*//*
+    /*查询天气代号所对应的天气*/
     private void queryWeatherInfo(String weatherCode) {
-        String address = "http://www.weather.com.cn/data/cityinfo" + weatherCode + ".html";
+        String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
         queryFromServer(address, "weatherCode");
     }
-    *//*根据传入的地址和类型去服务器查询天气代号或天气信息*//*
+    /*根据传入的地址和类型去服务器查询天气代号或天气信息*/
     private void queryFromServer(final String address, final String type) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
@@ -145,9 +147,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 });
             }
         });
-    }*/
+    }
 
-    private void queryWeatherInfoFromBaidu(String countyCode){
+    /*private void queryWeatherInfoFromBaidu(String countyCode){
         String httpUrl = "http://apis.baidu.com/apistore/weatherservice/cityid";
         String httpArg = "cityid=101" + countyCode;
         String address = httpUrl + "?" + httpArg;
@@ -173,7 +175,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 });
             }
         });
-    }
+    }*/
 
     /*从SharedPreferences文件中读取存储的天气信息，并显示在界面上*/
     private void showWeather() {
@@ -186,8 +188,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
 //        currentDateText.setText("current_date", "");
         currentDateText.setText(sdf.format(new Date()));//这里再获取时间，再格式化时间才对吧。
         weatherDespText.setText(prefs.getString("weather_desp", ""));
-        temp1Text.setText(prefs.getString("temp1", "") + "°C");
-        temp2Text.setText(prefs.getString("temp2", "") + "°C");
+        temp1Text.setText(prefs.getString("temp1", ""));
+        temp2Text.setText(prefs.getString("temp2", ""));
 
         cityNameText.setVisibility(View.VISIBLE);
         weatherInfoLayout.setVisibility(View.VISIBLE);
