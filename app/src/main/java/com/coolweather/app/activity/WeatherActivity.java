@@ -63,7 +63,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         if (!TextUtils.isEmpty(countyCode)) {
             //有县级代号，countyCode时，就去查天气，先查对应的天气码，再根据天气码查具体天气
             //上一条注释是从中国天气网api查，但是不行。换一个api，直接用城市id就可查，即countyCode就可查天气信息。
-            publishText.setText("同步中");
+            publishText.setText("同步中...");
             cityNameText.setVisibility(View.INVISIBLE);
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             queryWeatherCode(countyCode);//中国天气网的
@@ -90,11 +90,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
             case R.id.refresh_weather:
                 publishText.setText("同步中...");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String countyCode = prefs.getString("county_code","");
-                String countyCode1 = countyCode.substring(3);
-                if (!TextUtils.isEmpty(countyCode1)) {
+                String countyCode = prefs.getString("weather_code","");
+//                String countyCode1 = countyCode.substring(3);//百度api的countyCode 与中国天气网的不同
+                if (!TextUtils.isEmpty(countyCode)) {
 //                    queryWeatherInfoFromBaidu(countyCode1);//从百度api查
-                    queryWeatherCode(countyCode);//中国天气网的
+                    queryWeatherInfo(countyCode);//中国天气网的
 
                 }
                 break;

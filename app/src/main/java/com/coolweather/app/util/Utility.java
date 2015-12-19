@@ -95,25 +95,25 @@ public class Utility {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
             String cityName = weatherInfo.getString("city");
-            String countyCode = weatherInfo.getString("cityid");//有问题，“cityid”对应的应该是countiCode，而且没啥用
+            String weatherCode = weatherInfo.getString("cityid");//有问题，“cityid”对应的应该是countiCode，而且没啥用。刷新用。 这个cityid是对应县的weatherCode。。
             String temp1 = weatherInfo.getString("temp2");
             String temp2 = weatherInfo.getString("temp1");
             String weatherDesp= weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
-            saveWeatherInfo(context, cityName, countyCode, temp1, temp2, weatherDesp, publishTime);
+            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     /*将服务器返回的具体城市的天气信息存储到SharedPreference文件中*/
-    public static void saveWeatherInfo(Context context, String cityName, String countyCode,
+    public static void saveWeatherInfo(Context context, String cityName, String weatherCode,
                                        String temp1, String temp2, String weatherDesp,
                                        String publishTime) {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("county_selected", true);
         editor.putString("city_name", cityName);
-        editor.putString("county_code", countyCode);//问题同上
+        editor.putString("weather_code", weatherCode);//问题同上
         editor.putString("temp1", temp1);
         editor.putString("temp2", temp2);
         editor.putString("weather_desp", weatherDesp);
